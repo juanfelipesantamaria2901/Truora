@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://root@crdb:26257/myapp?sslmode=disable
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - crdb
+
+  crdb:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: start-single-node --insecure
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    volumes:
+      - cockroach_data:/cockroach/cockroach-data
+    healthcheck:
+      test: ["CMD", "/cockroach/cockroach", "sql", "--insecure", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Database initialization
+  db-init:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: >
+      sh -c "
+        sleep 15 &&
+        /cockroach/cockroach sql --insecure --host=crdb:26257 -e 'CREATE DATABASE IF NOT EXISTS myapp'
+      "
+    depends_on:
+      - crdb
+    restart: "no"
+
+volumes:
+  cockroach_data:

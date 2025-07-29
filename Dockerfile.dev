@@ -1,0 +1,38 @@
+# Development Dockerfile for hot reloading
+
+# Frontend development stage
+FROM node:20-alpine AS frontend-dev
+WORKDIR /app
+
+# Install dependencies
+COPY app/frontend/package*.json ./
+RUN npm ci
+
+# Copy source code
+COPY app/frontend/ ./
+
+# Expose Vite dev server port
+EXPOSE 5173
+
+# Default command (can be overridden)
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# Backend development stage
+FROM golang:1.23-alpine AS backend-dev
+WORKDIR /app
+
+# Install air for hot reloading
+RUN go install github.com/cosmtrek/air@latest
+
+# Copy go mod files
+COPY app/backend/go.mod app/backend/go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY app/backend/ ./
+
+# Expose backend port
+EXPOSE 8000
+
+# Default command (can be overridden)
+CMD ["air", "-c", ".air.toml"]

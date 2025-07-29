@@ -1,0 +1,317 @@
+openapi: 3.1.0
+info:
+  title: Truora Stock API
+  description: Professional API for stock data management and investment recommendations
+  version: 1.0.0
+  contact:
+    name: Truora Development Team
+    email: dev@truora.com
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the API service
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: truora-stock-api
+
+  /api/v1/stocks:
+    get:
+      summary: Get all stocks
+      description: Retrieve a paginated list of stocks with optional search functionality
+      parameters:
+        - name: limit
+          in: query
+          description: Number of stocks to return (max 100)
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of stocks to skip
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: q
+          in: query
+          description: Search query for symbol or company name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of stocks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Stock'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/stocks/{symbol}:
+    get:
+      summary: Get stock by symbol
+      description: Retrieve detailed information for a specific stock
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          description: Stock symbol (e.g., AAPL, GOOGL)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Stock'
+        '404':
+          description: Stock not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/stocks/fetch:
+    post:
+      summary: Fetch stocks from external API
+      description: Fetch all stock data from the external API and store in database
+      responses:
+        '200':
+          description: Stocks fetched and stored successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Stocks fetched and stored successfully
+        '500':
+          description: Failed to fetch or store stocks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/recommendations:
+    get:
+      summary: Get stock recommendations
+      description: Retrieve top stock recommendations based on analysis algorithm
+      parameters:
+        - name: limit
+          in: query
+          description: Number of recommendations to return (max 50)
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: Recommendations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StockRecommendation'
+                  count:
+                    type: integer
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/recommendations/generate:
+    post:
+      summary: Generate new recommendations
+      description: Analyze all stocks and generate new investment recommendations
+      responses:
+        '200':
+          description: Recommendations generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Recommendations generated successfully
+        '500':
+          description: Failed to generate recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Stock:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        symbol:
+          type: string
+          example: AAPL
+        company_name:
+          type: string
+          example: Apple Inc.
+        price:
+          type: number
+          format: float
+          example: 150.25
+        change:
+          type: number
+          format: float
+          example: 2.50
+        change_percent:
+          type: number
+          format: float
+          example: 1.69
+        volume:
+          type: integer
+          example: 50000000
+        market_cap:
+          type: integer
+          example: 2500000000000
+        pe:
+          type: number
+          format: float
+          nullable: true
+          example: 25.5
+        dividend_yield:
+          type: number
+          format: float
+          nullable: true
+          example: 0.5
+        week_52_high:
+          type: number
+          format: float
+          nullable: true
+          example: 180.00
+        week_52_low:
+          type: number
+          format: float
+          nullable: true
+          example: 120.00
+        sector:
+          type: string
+          example: Technology
+        industry:
+          type: string
+          example: Consumer Electronics
+        description:
+          type: string
+          example: Apple Inc. designs, manufactures, and markets smartphones...
+        last_updated:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StockRecommendation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        stock_id:
+          type: integer
+          example: 1
+        stock:
+          $ref: '#/components/schemas/Stock'
+        score:
+          type: number
+          format: float
+          example: 85.5
+        reason:
+          type: string
+          example: Strong positive momentum, attractive P/E ratio, high dividend yield
+        risk_level:
+          type: string
+          enum: [low, medium, high]
+          example: medium
+        time_horizon:
+          type: string
+          enum: [short, medium, long]
+          example: medium
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        limit:
+          type: integer
+          example: 20
+        offset:
+          type: integer
+          example: 0
+        total:
+          type: integer
+          example: 1000
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Failed to retrieve stocks
+        details:
+          type: string
+          example: Database connection failed

@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+  # Frontend development server with hot reload
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./app/frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - backend
+
+  # Backend development server with hot reload
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/backend:/app
+    environment:
+      - DATABASE_URL=postgresql://root@crdb:26257/myapp?sslmode=disable
+      - PORT=8000
+      - GIN_MODE=debug
+    command: go run ./cmd/api
+    depends_on:
+      - crdb
+    restart: unless-stopped
+
+  # CockroachDB for development
+  crdb:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: start-single-node --insecure --listen-addr=0.0.0.0:26257 --http-addr=0.0.0.0:8080
+    ports:
+      - "26257:26257"  # SQL
+      - "8081:8080"    # Web UI (different port to avoid conflict)
+    volumes:
+      - cockroach_dev_data:/cockroach/cockroach-data
+    healthcheck:
+      test: ["CMD", "cockroach", "sql", "--insecure", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Database initialization
+  db-init:
+    image: cockroachdb/cockroach:latest-v23.2
+    depends_on:
+      crdb:
+        condition: service_healthy
+    command: >
+      sh -c "
+        cockroach sql --insecure --host=crdb:26257 -e 'CREATE DATABASE IF NOT EXISTS myapp;'
+        echo 'Database initialized successfully'
+      "
+    restart: "no"
+
+volumes:
+  cockroach_dev_data:
+
+networks:
+  default:
+    name: truora-dev

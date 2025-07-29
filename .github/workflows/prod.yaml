@@ -1,0 +1,52 @@
+name: Prod Deploy
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPO: 123456789012.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/go-vue-app
+
+jobs:
+  plan:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          cd infra
+          terraform init
+          terraform plan -var="image_tag=${{ github.sha }}"
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+      - run: |
+          docker build -t go-vue-app .
+          docker tag go-vue-app:latest $ECR_REPO:${{ github.sha }}
+          docker push $ECR_REPO:${{ github.sha }}
+
+      - run: |
+          cd infra
+          terraform init
+          terraform apply -auto-approve -var="image_tag=${{ github.sha }}"
