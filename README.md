@@ -352,7 +352,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email [support@truora.com](mailto:jfsg2901@gmail.com)
+For support, email [support@gmail.com](mailto:jfsg2901@gmail.com)
 
 ---
 
