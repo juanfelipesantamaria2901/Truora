@@ -1,10 +1,10 @@
 # Truora Stock Analysis Platform
 
-A comprehensive full-stack application for intelligent stock market analysis and investment recommendations. This platform combines a robust Go backend with a modern Vue.js frontend to provide professional-grade stock data management and AI-powered investment insights.
+A comprehensive full-stack application for hiring process in Truoara, the app makes stock analysis and investment recommendations. This platform combines a robust Go backend with a modern Vue.js frontend to provide professional-grade stock data management and AI-powered investment insights.
 
 ## 🚀 Project Overview
 
-Truora is designed for investors, financial analysts, and fintech companies who need reliable stock data, intelligent recommendations, and a modern web interface for market analysis. The platform features real-time data synchronization, sophisticated recommendation algorithms, and a responsive web application.
+This App is designed for hiring process in Truora, the app makes stock analysis and investment recommendations.Use only for reference purposes, do not use for real investment decisions, the app is use false data for analysis.
 
 ## 🏗️ Architecture
 
@@ -352,8 +352,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email [support@truora.com](mailto:support@truora.com) or join our [Discord community](https://discord.gg/truora).
+For support, email [support@truora.com](mailto:jfsg2901@gmail.com)
 
 ---
 
-**Built with ❤️ by the Truora Development Team**
+**Built by Juan Felipe Santamariá Guerrero**

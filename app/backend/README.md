@@ -1,10 +1,10 @@
 # Truora Stock API
 
-A professional Go API for fetching, storing, and analyzing stock data with intelligent investment recommendations.
+A professional Go API for simulating fetching, storing, and analyzing stock data with intelligent investment recommendations using CockroachDB and Mock data for Truora endpoint.
 
 ## Features
 
-- **Stock Data Management**: Fetch and store stock data from external APIs
+- **Stock Data Management**: Simulate fetching and storing stock data from external APIs
 - **CockroachDB Integration**: Robust database storage with GORM ORM
 - **Investment Recommendations**: AI-powered stock analysis and recommendations
 - **RESTful API**: Clean, well-documented REST endpoints
