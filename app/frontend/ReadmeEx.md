@@ -2,7 +2,7 @@
 
 ## 🎯 Architecture Overview
 
-The Truora frontend is a modern Vue.js 3 application built with TypeScript, featuring a component-based architecture, reactive state management with Pinia, and a responsive design system powered by Tailwind CSS. The application follows Vue 3's Composition API patterns and implements best practices for scalable frontend development.
+The frontend is a modern Vue.js 3 application built with TypeScript, featuring a component-based architecture, reactive state management with Pinia, and a responsive design system powered by Tailwind CSS. The application follows Vue 3's Composition API patterns and implements best practices for scalable frontend development.
 
 ## 📁 Detailed Project Structure
 

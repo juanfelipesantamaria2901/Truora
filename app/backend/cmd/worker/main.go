@@ -28,8 +28,8 @@ func main() {
 
 	// Initialize repository and service
 	stockRepo := repository.NewStockRepository(db.DB)
-	apiURL := getEnv("STOCK_API_URL", "https://api.karenai.click/swechallenge/list")
-	apiKey := getEnv("STOCK_API_KEY", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdHRlbXB0cyI6MSwiZW1haWwiOiJqZnNnMjkwMUBnbWFpbC5jb20iLCJleHAiOjE3NTMxNTA3MTYsImlkIjoiIiwicGFzc3dvcmQiOiJ1c2VyLyoqL0ZST00vKiovdXNlcnMvKiovV0hFUkUvKiovJzEnPScxJzstLSJ9.2fiNZtZsYux1n8hQf5oeTlrSQ0p0v2zYc6gkJmWli7k")
+	apiURL := getEnv("STOCK_API_URL", "https://api")
+	apiKey := getEnv("STOCK_API_KEY", "Bearer ")
 	stockService := service.NewStockService(stockRepo, apiURL, apiKey)
 
 	log.Println("Starting Truora Stock Worker...")

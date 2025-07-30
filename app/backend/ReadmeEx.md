@@ -2,7 +2,7 @@
 
 ## 🏗️ Architecture Overview
 
-The Truora backend is a production-ready Go REST API built with enterprise-grade patterns and best practices. It follows a clean architecture approach with clear separation of concerns across handlers, services, repositories, and domain models.
+The backend is a production-ready Go REST API built with enterprise-grade patterns and best practices. It follows a clean architecture approach with clear separation of concerns across handlers, services, repositories, and domain models.
 
 ## 📁 Detailed Project Structure
 

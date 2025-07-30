@@ -1,15 +1,15 @@
-# Truora Stock Analysis Platform
+# Stock Analysis Platform
 
-A comprehensive full-stack application for hiring process in Truoara, the app makes stock analysis and investment recommendations. This platform combines a robust Go backend with a modern Vue.js frontend to provide professional-grade stock data management and AI-powered investment insights.
+A comprehensive full-stack application for hiring process in a company, the app makes stock analysis and investment recommendations. This platform combines a robust Go backend with a modern Vue.js frontend to provide professional-grade stock data management and AI-powered investment insights.
 
 ## 🚀 Project Overview
 
-This App is designed for hiring process in Truora, the app makes stock analysis and investment recommendations.Use only for reference purposes, do not use for real investment decisions, the app is use false data for analysis.
+This App is designed for hiring process in a company, the app makes stock analysis and investment recommendations.Use only for reference purposes, do not use for real investment decisions, the app is use false data for analysis.
 
 ## 🏗️ Architecture
 
 ```
-truora/
+stock-analysis/
 ├── app/
 │   ├── backend/          # Go REST API (Port 8000)
 │   └── frontend/         # Vue.js SPA (Port 5173)
